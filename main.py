@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 #  output data as a csv
 #  handling for multiple opportunities, atm I just ignore them and take all other data
 #  some sort of visualisation??
+#  folium module to visualise could be very cool tbh
 
 # opens the html file from local dir
 with open('Mechanical_Manufacturing Engineering Graduate Jobs in North West _ Gradcracker - Careers for STEM '
