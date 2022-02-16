@@ -15,7 +15,9 @@ with open('Mechanical_Manufacturing Engineering Graduate Jobs in North West _ Gr
     content = html_file.read()
 
     soup = BeautifulSoup(content, 'lxml')
-    for posting in soup.find_all('div', class_="tw-flex tw-p-4"):
+    postings = soup.find_all('div', class_="tw-flex tw-p-4")
+    print(f'There are {len(postings)} jobs available\n')
+    for posting in postings:
         # Company name can be found in the alt text for the company's logo
         alt_image = posting.find('div', class_="tw-flex tw-flex-col tw-w-2/5 tw-pl-4 tw-border-l-2 tw-border-gray-100")
         job_company = alt_image.a.img['alt']
