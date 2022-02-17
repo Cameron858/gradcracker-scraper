@@ -89,16 +89,8 @@ def main():
         page_listings = parse_page_from_url(("https://www.gradcracker.com/search/all-disciplines/engineering"
                                              "-graduate-jobs?order=deadlines&page={}").format(page_number))
 
-        total_listings.append(page_listings)
-        print(np.shape(total_listings))
-        sleep(randint(1, 2))
-
-    # convert to np array, reshape into 2D array
-    total_listings = np.array(total_listings)
-    total_listings = total_listings.reshape([-1, 6])
-
-    # (job listings, save state determines if .csv is saved)
-    export_df_as_csv(total_listings, 'eng-jobs', save_state=True)
+        # (job listings, save state determines if .csv is saved)
+        export_df_as_csv(page_listings, 'eng-jobs-{}'.format(page_number), save_state=True)
 
 
 if __name__ == '__main__':
