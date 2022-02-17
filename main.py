@@ -28,11 +28,18 @@ def get_job_info(listing):
     return [job_title, job_company, job_salary, job_location, job_accepting, job_deadline]
 
 
-def export_df_as_csv(data):
-    # append data list to pandas dataframe, save as .csv
-    cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
-    df = pd.DataFrame(data, columns=cols)
-    df.to_csv('north-west-listings.csv', index=False)
+def export_df_as_csv(total_job_listings_list, save_state=None):
+
+    if save_state is None:
+        print("Save state not given.")
+    elif save_state:
+        # append data list to pandas dataframe, save as .csv
+        cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
+        df = pd.DataFrame(total_job_listings_list, columns=cols)
+        df.to_csv('north-west-listings.csv', index=False)
+        print("The job listings have been saved")
+    else:
+        print("The job listings have not been saved")
 
 
 def main():
@@ -56,7 +63,8 @@ def main():
         job = get_job_info(posting)
         data.append(job)
 
-    export_df_as_csv(data)
+    # (job listings, save state determines if .csv is saved)
+    export_df_as_csv(data, save_state=False)
 
 
 if __name__ == '__main__':
