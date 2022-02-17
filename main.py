@@ -1,5 +1,5 @@
 # TODO
-#  save data as a csv (do i want seperate ones each day?)
+#  strange symbols for salaries, can remove them by ignoring 1st char but then 'Competitive' -> 'ompetitive'
 #  handling for multiple opportunities, atm I just ignore them and take all other data
 #  some sort of visualisation??
 #  folium module to visualise could be very cool tbh
@@ -46,7 +46,7 @@ def main():
     # append data list to pandas dataframe
     cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
     df = pd.DataFrame(data, columns=cols)
-    df.to_csv('north-west-listings', index=False)
+    df.to_csv('north-west-listings.csv', index=False)
 
 
 if __name__ == '__main__':
