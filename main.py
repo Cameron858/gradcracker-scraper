@@ -82,7 +82,7 @@ def main():
     total_listings = []
     pages = get_page_count()
 
-    for page_number in range(1, pages + 1):
+    for page_number in range(1, pages+1):
         # TODO data needs to be concatenated to previous versions each iteration
         print(f'Processing page {page_number} out of {pages}')
 
@@ -93,9 +93,14 @@ def main():
         print(np.shape(total_listings))
         sleep(randint(1, 2))
 
+    # convert to np array, reshape into 2D array
+    total_listings = np.array(total_listings)
+    total_listings = total_listings.reshape([-1, 6])
+
     # (job listings, save state determines if .csv is saved)
     export_df_as_csv(total_listings, 'eng-jobs', save_state=True)
 
 
 if __name__ == '__main__':
+    print('Starting...')
     main()
