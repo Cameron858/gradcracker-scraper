@@ -79,8 +79,9 @@ def export_df_as_csv(total_job_listings_list, filename, save_state=None):
 
 def main():
 
-    total_listings = []
     pages = get_page_count()
+    total_listings = pd.DataFrame()
+    cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
 
     for page_number in range(1, pages+1):
         # TODO data needs to be concatenated to previous versions each iteration
@@ -89,8 +90,8 @@ def main():
         page_listings = parse_page_from_url(("https://www.gradcracker.com/search/all-disciplines/engineering"
                                              "-graduate-jobs?order=deadlines&page={}").format(page_number))
 
-        # (job listings, save state determines if .csv is saved)
-        export_df_as_csv(page_listings, 'eng-jobs-{}'.format(page_number), save_state=True)
+        page_listings_df = pd.DataFrame(page_listings, columns=cols)
+        export_df_as_csv(page_listings_df, 'eng-jobs-{}'.format(page_number), save_state=True)
 
 
 if __name__ == '__main__':
