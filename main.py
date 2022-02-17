@@ -9,14 +9,16 @@ import requests
 import pandas as pd
 
 
-def get_job_info(posting):
+def get_job_info(listing):
+    # posting is of bs4 ResultSet type
+
     # Company name can be found in the alt text for the company's logo
-    alt_image = posting.find('div', class_="tw-flex tw-flex-col tw-w-2/5 tw-pl-4 tw-border-l-2 "
+    alt_image = listing.find('div', class_="tw-flex tw-flex-col tw-w-2/5 tw-pl-4 tw-border-l-2 "
                                            "tw-border-gray-100")
     job_company = alt_image.a.img['alt']
 
     # the rest of the relavent infomation can be found in the main posting
-    job = posting.find('div', class_="tw-w-3/5 tw-pr-4 tw-space-y-2")
+    job = listing.find('div', class_="tw-w-3/5 tw-pr-4 tw-space-y-2")
     job_title = job.a.text.strip()
     job_salary = job.ul.text.splitlines()[1]
     job_location = job.ul.text.splitlines()[2]
@@ -24,6 +26,13 @@ def get_job_info(posting):
     job_deadline = job.ul.text.splitlines()[-1]
 
     return [job_title, job_company, job_salary, job_location, job_accepting, job_deadline]
+
+
+def export_df_as_csv(data):
+    # append data list to pandas dataframe, save as .csv
+    cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
+    df = pd.DataFrame(data, columns=cols)
+    df.to_csv('north-west-listings.csv', index=False)
 
 
 def main():
@@ -47,10 +56,7 @@ def main():
         job = get_job_info(posting)
         data.append(job)
 
-    # append data list to pandas dataframe
-    cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
-    df = pd.DataFrame(data, columns=cols)
-    df.to_csv('north-west-listings.csv', index=False)
+    export_df_as_csv(data)
 
 
 if __name__ == '__main__':
