@@ -10,7 +10,7 @@ import requests
 import pandas as pd
 from time import sleep
 from random import randint
-import numpy as np
+from datetime import date
 import math
 
 
@@ -42,7 +42,7 @@ def get_job_info(listing):
     job_accepting = job.ul.text.splitlines()[3]
     job_deadline = job.ul.text.splitlines()[-1]
 
-    # list
+    # returns list
     return [job_title, job_company, job_salary, job_location, job_accepting, job_deadline]
 
 
@@ -80,18 +80,24 @@ def export_df_as_csv(total_job_listings_list, filename, save_state=None):
 def main():
 
     pages = get_page_count()
-    total_listings = pd.DataFrame()
+    total_listings = []     # to be used to store the total listings
     cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
 
-    for page_number in range(1, pages+1):
+    for page_number in range(1, pages + 1):
         # TODO data needs to be concatenated to previous versions each iteration
+        # append() adds lists to wrong dim -> size of (2,80,6) instead of (160,6)
         print(f'Processing page {page_number} out of {pages}')
+        sleep(randint(1, 2))        # prevent ip timeouts
 
         page_listings = parse_page_from_url(("https://www.gradcracker.com/search/all-disciplines/engineering"
                                              "-graduate-jobs?order=deadlines&page={}").format(page_number))
 
-        page_listings_df = pd.DataFrame(page_listings, columns=cols)
-        export_df_as_csv(page_listings_df, 'eng-jobs-{}'.format(page_number), save_state=True)
+        for p in page_listings:
+            total_listings.append(p)
+
+    # saves each page as seperate csv :(
+    total_listings_df = pd.DataFrame(total_listings, columns=cols)
+    export_df_as_csv(total_listings_df, 'eng-jobs-{}'.format(date.today()), save_state=True)
 
 
 if __name__ == '__main__':
