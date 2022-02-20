@@ -71,7 +71,7 @@ def export_df_as_csv(total_job_listings_list, filename, save_state=None):
         # append data list to pandas dataframe, save as .csv
         cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
         df = pd.DataFrame(total_job_listings_list, columns=cols)
-        df.to_csv('{}.csv'.format(filename), index=False)
+        df.to_csv('{}.csv'.format(filename), index=False, encoding='utf-8-sig')
         print("The job listings have been saved")
     else:
         print(f"The job listings have not been saved, save_state = {save_state}")
@@ -96,7 +96,7 @@ def main():
         for p in page_listings:
             total_listings.append(p)
 
-    # saves each page as separate csv :(
+    # saves as csv
     total_listings_df = pd.DataFrame(total_listings, columns=cols)
     export_df_as_csv(total_listings_df, 'eng-jobs-{}'.format(date.today()), save_state=True)
 
