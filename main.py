@@ -1,6 +1,5 @@
 # TODO
 #  allow custom search criteria
-#  strange symbols for salaries, can remove them by ignoring 1st char but then 'Competitive' -> 'ompetitive'
 #  handling for multiple opportunities, atm I just ignore them and take all other data
 #  some sort of visualisation??
 #  folium module to visualise could be very cool tbh
@@ -69,6 +68,7 @@ def export_df_as_csv(total_job_listings_list, filename, save_state=None):
         print("Save state not given.")
     elif save_state:
         # append data list to pandas dataframe, save as .csv
+        # csv encoding is essential to ignore strange errors
         cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
         df = pd.DataFrame(total_job_listings_list, columns=cols)
         df.to_csv('{}.csv'.format(filename), index=False, encoding='utf-8-sig')
@@ -79,6 +79,8 @@ def export_df_as_csv(total_job_listings_list, filename, save_state=None):
 
 def main():
 
+    print('Starting...')
+
     pages = get_page_count()
     total_listings = []     # to be used to store the total listings
     cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
@@ -86,13 +88,14 @@ def main():
     for page_number in range(1, pages + 1):
         # TODO data needs to be concatenated to previous versions each iteration
         # append() adds lists to wrong dim -> size of (2,80,6) instead of (160,6)
+
         print(f'Processing page {page_number} out of {pages}')
         sleep(randint(1, 2))        # prevent ip timeouts
 
         page_listings = parse_page_from_url(("https://www.gradcracker.com/search/all-disciplines/engineering"
                                              "-graduate-jobs?order=deadlines&page={}").format(page_number))
 
-        # unpack page listings as separate jobs
+        # unpack page listings as separate jobs. not great but it works for now
         for p in page_listings:
             total_listings.append(p)
 
@@ -102,5 +105,4 @@ def main():
 
 
 if __name__ == '__main__':
-    print('Starting...')
     main()
