@@ -33,7 +33,7 @@ def get_job_info(listing):
                                            "tw-border-gray-100")
     job_company = alt_image.a.img['alt']
 
-    # the rest of the relavent infomation can be found in the main posting
+    # the rest of the relevant information can be found in the main posting
     # div class="tw-w-3/5 tw-pr-4 tw-space-y-2" is the actual job posting (left 'half' of posting block)
     job = listing.find('div', class_="tw-w-3/5 tw-pr-4 tw-space-y-2")
     job_title = job.a.text.strip()
@@ -92,10 +92,11 @@ def main():
         page_listings = parse_page_from_url(("https://www.gradcracker.com/search/all-disciplines/engineering"
                                              "-graduate-jobs?order=deadlines&page={}").format(page_number))
 
+        # unpack page listings as separate jobs
         for p in page_listings:
             total_listings.append(p)
 
-    # saves each page as seperate csv :(
+    # saves each page as separate csv :(
     total_listings_df = pd.DataFrame(total_listings, columns=cols)
     export_df_as_csv(total_listings_df, 'eng-jobs-{}'.format(date.today()), save_state=True)
 
