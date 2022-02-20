@@ -12,6 +12,7 @@ from time import sleep
 from random import randint
 from datetime import date
 from bs4 import BeautifulSoup
+from gradcracker_scraper_util import filter_salary_types
 
 
 def get_page_count():
