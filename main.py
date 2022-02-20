@@ -5,13 +5,13 @@
 #  some sort of visualisation??
 #  folium module to visualise could be very cool tbh
 
-from bs4 import BeautifulSoup
+import math
 import requests
 import pandas as pd
 from time import sleep
 from random import randint
 from datetime import date
-import math
+from bs4 import BeautifulSoup
 
 
 def get_page_count():
@@ -37,7 +37,7 @@ def get_job_info(listing):
     # div class="tw-w-3/5 tw-pr-4 tw-space-y-2" is the actual job posting (left 'half' of posting block)
     job = listing.find('div', class_="tw-w-3/5 tw-pr-4 tw-space-y-2")
     job_title = job.a.text.strip()
-    job_salary = job.ul.text.splitlines()[1]
+    job_salary = filter_salary_types(job.ul.text.splitlines()[1])
     job_location = job.ul.text.splitlines()[2]
     job_accepting = job.ul.text.splitlines()[3]
     job_deadline = job.ul.text.splitlines()[-1]

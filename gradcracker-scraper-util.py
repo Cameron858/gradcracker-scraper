@@ -41,8 +41,4 @@ def filter_salary_types(salary):
             else:
                 pass
 
-    print(salary)
     return salary
-
-
-filter_salary_types('£25,714 (nationally) or £32,157 (inner London)')
