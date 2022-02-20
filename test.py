@@ -1,9 +1,10 @@
 import re
 
 
-def test():
+def filter_salary_types(salary):
+    # salary is expected to be a single string passed into this function
 
-    # expected types of salaries from gradcracker
+    # expected types of salaries from gradcracker - testing
     salary_tests = [
         '£30,000',
         '€32,000',
@@ -23,9 +24,25 @@ def test():
         'Up to £23,655'
     ]
 
-    for x in salary_tests:
-        print(bool(re.match("[£][0-9]+[,][0-9]+[ |-]+[£]", x)))
-        print(re.findall(".......*-", x))
+    # this hurts to know I wrote this
+
+    # does it start with a salary?
+    if re.match("[€£][0-9]+", salary):
+        salary = salary[0:7]
+    else:
+        # remove "up to" types
+        if re.findall("^Up to", salary):
+            salary = salary[6:]
+        else:
+            # remove text from salaries
+            if re.findall("[£|€]", salary):
+                idx = re.search("[£]", salary).start()
+                salary = salary[idx:]
+            else:
+                pass
+
+    print(salary)
+    return salary
 
 
-test()
+filter_salary_types('£25,714 (nationally) or £32,157 (inner London)')

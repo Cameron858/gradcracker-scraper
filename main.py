@@ -1,4 +1,5 @@
 # TODO
+#  loop through the disciplines and add as another category
 #  allow custom search criteria
 #  handling for multiple opportunities, atm I just ignore them and take all other data
 #  some sort of visualisation??
