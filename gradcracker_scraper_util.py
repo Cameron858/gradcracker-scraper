@@ -1,4 +1,31 @@
 import re
+import math
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+
+
+def export_df_as_csv(total_job_listings_list, cols, filename, save_state=None):
+    if save_state is None:
+        print("Save state not given.")
+    elif save_state:
+        # append data list to pandas dataframe, save as .csv
+        # csv encoding is essential to ignore strange errors
+        df = pd.DataFrame(total_job_listings_list, columns=cols)
+        df.to_csv('{}.csv'.format(filename), index=False, encoding='utf-8-sig')
+        print("The job listings have been saved")
+    else:
+        print(f"The job listings have not been saved, save_state = {save_state}")
+
+
+def get_page_count(url):
+    soup = BeautifulSoup(requests.get(url).content, "html.parser")
+    results_list = soup.find_all("ul", class_="breadcrumb")
+    results_string = results_list[0].find_all("li")[2].text.split()
+    number_of_pages = math.ceil(int(results_string[4].replace(',', "")) / int(results_string[2]))
+    print(f'There are {number_of_pages} pages available.')
+
+    return number_of_pages
 
 
 def filter_salary_types(salary):

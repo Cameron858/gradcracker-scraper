@@ -1,28 +1,16 @@
 # TODO
-#  loop through the disciplines and add as another category
 #  allow custom search criteria
 #  handling for multiple opportunities, atm I just ignore them and take all other data
 #  some sort of visualisation??
 #  folium module to visualise could be very cool tbh
 
-import math
 import requests
 import pandas as pd
 from time import sleep
 from random import randint
 from datetime import date
 from bs4 import BeautifulSoup
-from gradcracker_scraper_util import filter_salary_types
-
-
-def get_page_count(url):
-    soup = BeautifulSoup(requests.get(url).content, "html.parser")
-    results_list = soup.find_all("ul", class_="breadcrumb")
-    results_string = results_list[0].find_all("li")[2].text.split()
-    number_of_pages = math.ceil(int(results_string[4].replace(',', "")) / int(results_string[2]))
-    print(f'There are {number_of_pages} pages available.')
-
-    return number_of_pages
+from gradcracker_scraper_util import filter_salary_types, export_df_as_csv, get_page_count
 
 
 def get_job_info(listing):
@@ -43,8 +31,14 @@ def get_job_info(listing):
     job_accepting = job.ul.text.splitlines()[3]
     job_deadline = job.ul.text.splitlines()[-1]
 
+    # check is posting has stated discipline
+    if job.find('div', class_="tw-text-xs tw-font-bold tw-text-gray-800") is not None:
+        job_discipline = job.find('div', class_="tw-text-xs tw-font-bold tw-text-gray-800").text
+    else:
+        job_discipline = 'N/A'
+
     # returns list
-    return [job_title, job_company, job_salary, job_location, job_accepting, job_deadline]
+    return [job_discipline, job_title, job_company, job_salary, job_location, job_accepting, job_deadline]
 
 
 def parse_page_from_url(page_url):
@@ -64,38 +58,6 @@ def parse_page_from_url(page_url):
     return data
 
 
-def export_df_as_csv(total_job_listings_list, filename, save_state=None):
-    if save_state is None:
-        print("Save state not given.")
-    elif save_state:
-        # append data list to pandas dataframe, save as .csv
-        # csv encoding is essential to ignore strange errors
-        cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
-        df = pd.DataFrame(total_job_listings_list, columns=cols)
-        df.to_csv('{}.csv'.format(filename), index=False, encoding='utf-8-sig')
-        print("The job listings have been saved")
-    else:
-        print(f"The job listings have not been saved, save_state = {save_state}")
-
-
-def loop_through_discs():
-    # loop through available disciplines on gradcracker
-    disciplines = [
-        'aerospace',
-        'chemical-process',
-        'civil-building',
-        'computing-technology',
-        'electronic-electrical',
-        'maths-analytics',
-        'mechanical-manufacturing',
-        'science'
-    ]
-
-    for d in disciplines:
-        cw_url = "https://www.gradcracker.com/search/{}/engineering-graduate-jobs?order=deadlines".format(d)
-        # TODO: for each d, parse page, adding a 'discipline' section to the post
-
-
 def main():
 
     print('Starting...')
@@ -103,11 +65,9 @@ def main():
 
     pages = get_page_count(url_all_discs.format(1))
     total_listings = []     # to be used to store the total listings
-    cols = ['Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
+    cols = ['Discipline', 'Job title', 'Company', 'Salary', 'Location', 'Accepting', 'Deadline']
 
     for page_number in range(1, pages + 1):
-        # TODO data needs to be concatenated to previous versions each iteration
-        # append() adds lists to wrong dim -> size of (2,80,6) instead of (160,6)
 
         print(f'Processing page {page_number} out of {pages}')
         sleep(randint(1, 2))        # prevent ip timeouts
@@ -120,7 +80,7 @@ def main():
 
     # saves as csv
     total_listings_df = pd.DataFrame(total_listings, columns=cols)
-    export_df_as_csv(total_listings_df, 'eng-jobs-{}'.format(date.today()), save_state=True)
+    export_df_as_csv(total_listings_df, cols, 'eng-jobs-{}'.format(date.today()), save_state=True)
 
 
 if __name__ == '__main__':
